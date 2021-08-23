@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:funda_assignment/resources/resources.dart';
+import 'package:fund_sample/resources/resources.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

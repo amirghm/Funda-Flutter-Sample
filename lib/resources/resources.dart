@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:funda_assignment/data/repository/local/app_preferences.dart';
+import 'package:fund_sample/data/repository/local/app_preferences.dart';
 
 class Resources {
 

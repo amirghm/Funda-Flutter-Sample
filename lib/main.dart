@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:funda_assignment/resources/resources.dart';
-import 'package:funda_assignment/screens/splash/splash_screen.dart';
+import 'package:fund_sample/resources/resources.dart';
+import 'package:fund_sample/screens/splash/splash_screen.dart';
 
 Future<void> main() async {
   runApp(FundaApp());
