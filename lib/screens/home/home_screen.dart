@@ -6,11 +6,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fund_sample/data/models/media.dart';
 import 'package:fund_sample/data/models/media_item.dart';
+import 'package:fund_sample/data/models/responses/house.dart';
+import 'package:fund_sample/data/repository/remote/house_repository.dart';
+import 'package:fund_sample/resources/constants.dart';
 import 'package:fund_sample/resources/resources.dart';
 import 'package:fund_sample/screens/gallery/photo_gallery_screen.dart';
+import 'package:fund_sample/utils/network/network_service.dart';
 import 'package:fund_sample/utils/utils.dart';
-import 'package:fund_sample/utils/widgets/webview_screen.dart';
+import 'package:fund_sample/screens/webview/webview_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
       child: Scaffold(
@@ -161,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen>
             viewportFraction: 1,
             pauseAutoPlayOnTouch: true,
             pauseAutoPlayOnManualNavigate: true,
-            autoPlayInterval: Duration(seconds: 8),
+            autoPlayInterval: Duration(seconds: 16),
             autoPlayAnimationDuration: Duration(milliseconds: 800),
             autoPlayCurve: Curves.fastOutSlowIn,
           ),
@@ -440,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen>
         'https://www.funda.nl/koop/amsterdam/appartement-42418369-vondelstraat-51-hs/#kaart');
   }
 
-  handleOnCallClicked() {
+  handleOnCallClicked() async {
     launch('tel://' + '2523432523');
   }
 
