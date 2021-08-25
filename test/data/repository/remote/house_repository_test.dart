@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fund_sample/data/models/responses/house.dart';
-import 'package:fund_sample/data/repository/remote/house_repository.dart';
-import 'package:fund_sample/resources/constants.dart';
-import 'package:fund_sample/utils/network/network_service.dart';
+import 'package:funda_sample/data/models/responses/house.dart';
+import 'package:funda_sample/data/repository/remote/house_repository.dart';
+import 'package:funda_sample/resources/constants.dart';
+import 'package:funda_sample/utils/network/network_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;

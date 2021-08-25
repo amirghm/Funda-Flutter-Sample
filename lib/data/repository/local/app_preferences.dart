@@ -1,4 +1,4 @@
-import 'package:fund_sample/resources/resources.dart';
+import 'package:funda_sample/resources/resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
