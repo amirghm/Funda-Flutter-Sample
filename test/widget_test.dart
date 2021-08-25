@@ -6,7 +6,7 @@ import 'package:fund_sample/screens/gallery/photo_gallery_screen.dart';
 
 import 'package:fund_sample/screens/home/home_screen.dart';
 import 'package:fund_sample/screens/splash/splash_screen.dart';
-import 'package:fund_sample/utils/widgets/webview_screen.dart';
+import 'package:fund_sample/screens/webview/webview_screen.dart';
 
 void main() {
 
