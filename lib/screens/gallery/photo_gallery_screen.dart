@@ -159,7 +159,7 @@ class _PhotoGalleryState extends State<PhotoGalleryScreen>
                   imageProvider:
                       CachedNetworkImageProvider(images[index].imageUrl ?? ''),
                   heroAttributes: PhotoViewHeroAttributes(
-                      tag: "${tag}-${images[index].id}"),
+                      tag: "$tag-${images[index].id}"),
                 );
               }),
             )),

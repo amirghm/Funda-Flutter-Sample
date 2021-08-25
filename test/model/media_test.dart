@@ -14,8 +14,6 @@ void main() {
   });
 
   test('Check If we null media items', (){
-
-    MediaItem mockMediaItem = MediaItem(category: 42,url:'link');
     Media mockMedia = Media(categorie: Media.MEDIA_IMAGE_CATEGORY,mediaItems: null);
 
     expect(mockMedia.imageUrl, null);
