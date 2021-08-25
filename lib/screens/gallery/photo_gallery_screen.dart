@@ -4,52 +4,52 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:fund_sample/data/models/media.dart';
-import 'package:fund_sample/resources/resources.dart';
-import 'package:fund_sample/utils/widgets/hidable_app_bar.dart';
+import 'package:funda_sample/data/models/media.dart';
+import 'package:funda_sample/resources/resources.dart';
+import 'package:funda_sample/utils/widgets/hidable_app_bar.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share/share.dart';
 
 class PhotoGalleryScreen extends StatefulWidget {
   const PhotoGalleryScreen(
-      {Key? key, required this.images, required this.index, required this.tag})
+      {Key? key, required this.photos, required this.index, required this.tag})
       : super(key: key);
 
-  final List<Media> images;
+  final List<Media> photos;
   final int index;
   final String tag;
 
   static Future<dynamic> open(
-      BuildContext context, List<Media> images, int index, String tag) {
+      BuildContext context, List<Media> photos, int index, String tag) {
     return Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              PhotoGalleryScreen(images: images, index: index, tag: tag)),
+              PhotoGalleryScreen(photos: photos, index: index, tag: tag)),
     );
   }
 
   @override
   _PhotoGalleryState createState() =>
-      _PhotoGalleryState(images: images, initialIndex: index, tag: tag);
+      _PhotoGalleryState(photos: photos, initialIndex: index, tag: tag);
 }
 
 class _PhotoGalleryState extends State<PhotoGalleryScreen>
     with SingleTickerProviderStateMixin {
 
-  late List<Media> images;
+  late List<Media> photos;
   late int initialIndex;
   late int index;
   late String tag;
   String titleIndicator = '';
 
   bool _showAppBar = true;
-  bool _isImageZoomed = false;
+  bool _isPhotoZoomed = false;
   late AnimationController _controller;
   late PageController _pageController;
 
-  _PhotoGalleryState({required this.images, required this.initialIndex, required this.tag});
+  _PhotoGalleryState({required this.photos, required this.initialIndex, required this.tag});
 
   @override
   initState() {
@@ -69,12 +69,12 @@ class _PhotoGalleryState extends State<PhotoGalleryScreen>
   }
 
   initTitleIndicator() {
-    if (images.length == 1)
+    if (photos.length == 1)
       titleIndicator = '';
     else
       titleIndicator = Resources.getStringWithPlaceholder(
           'photo_gallery__count_indicator',
-          [(index + 1).toString(), images.length.toString()]);
+          [(index + 1).toString(), photos.length.toString()]);
   }
 
   initPageController() {
@@ -85,7 +85,7 @@ class _PhotoGalleryState extends State<PhotoGalleryScreen>
   Widget build(BuildContext context) {
     return DismissiblePage(
       direction:
-          _isImageZoomed ? DismissDirection.none : DismissDirection.vertical,
+          _isPhotoZoomed ? DismissDirection.none : DismissDirection.vertical,
       key: const Key('key'),
       onDismiss: () {
         SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
@@ -142,24 +142,24 @@ class _PhotoGalleryState extends State<PhotoGalleryScreen>
                 child: PhotoViewGallery(
               scaleStateChangedCallback: (scale) => setState(() {
                 print(scale);
-                _isImageZoomed = scale == PhotoViewScaleState.zoomedIn;
+                _isPhotoZoomed = scale == PhotoViewScaleState.zoomedIn;
               }),
               pageController: _pageController,
               onPageChanged: (index) {
                 setState(() {
-                  _isImageZoomed = false;
+                  _isPhotoZoomed = false;
                   this.index = index;
                   titleIndicator = Resources.getStringWithPlaceholder(
                       'photo_gallery__count_indicator',
-                      [(index + 1).toString(), images.length.toString()]);
+                      [(index + 1).toString(), photos.length.toString()]);
                 });
               },
-              pageOptions: List.generate(images.length, (index) {
+              pageOptions: List.generate(photos.length, (index) {
                 return PhotoViewGalleryPageOptions(
                   imageProvider:
-                      CachedNetworkImageProvider(images[index].imageUrl ?? ''),
+                      CachedNetworkImageProvider(photos[index].imageUrl ?? ''),
                   heroAttributes: PhotoViewHeroAttributes(
-                      tag: "$tag-${images[index].id}"),
+                      tag: "$tag-${photos[index].id}"),
                 );
               }),
             )),
@@ -185,7 +185,7 @@ class _PhotoGalleryState extends State<PhotoGalleryScreen>
                         children: [
                           InkWell(
                             onTap: () =>
-                                handleOnShareClicked(images[index].imageUrl),
+                                handleOnShareClicked(photos[index].imageUrl),
                             child: Icon(
                               Icons.share,
                               color: Colors.white,

@@ -1,4 +1,4 @@
-import 'package:fund_sample/data/models/specificatie.dart';
+import 'package:funda_sample/data/models/specificatie.dart';
 
 class Kenmerken {
   Kenmerken({

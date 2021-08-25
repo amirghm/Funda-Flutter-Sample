@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fund_sample/data/repository/local/app_preferences.dart';
+import 'package:funda_sample/data/repository/local/app_preferences.dart';
 
 class Resources {
 
@@ -7,6 +7,7 @@ class Resources {
   static const Color APP_PRIMARY_COLOR = const Color.fromARGB(255,247,161,0);
   static const Color APP_ACCENT_COLOR = Color.fromARGB(255,96,197,248);
   static const Color APP_OUTLINE_COLOR = const Color.fromARGB(255,210,210,210);
+  static const Color APP_BODY_COLOR = const Color.fromARGB(0xFF, 0x75, 0x75, 0x75);
   static const Color APP_PRIMARY_A33 = const Color.fromARGB(56,247,161,0);
 
   static const LOCALE_ENGLISH = 'en';
@@ -16,19 +17,17 @@ class Resources {
   static Map<String, String> _strings_en = {
     'app__name': 'Funda Sample App',
 
-    'general__no_internet': 'An error occurred during processing your request\nplease try again later',
-    'general__server_error': 'Error occurred while Communication with Server with StatusCode : [0]',
-    'general__ok' : 'OK',
-    'general__mm' : '<b>[0]</b>&nbsp;m&sup2;',
-
     'home__rooms' : '<b>[0]</b> Room(s)',
     'home__bathrooms' : '<b>[0]</b> Bathroom(s)',
     'home__description' : 'Description',
     'home__specification' : 'Specification',
     'home__price_formatted' : '€ [0]',
-
+    'home__mm' : '<b>[0]</b>&nbsp;m&sup2;',
 
     'photo_gallery__count_indicator': '[0] of [1]',
+
+    'general__no_internet': 'An error occurred during processing your request\nplease try again later',
+    'general__server_error': 'Error occurred while Communication with Server with StatusCode : [0]',
   };
 
   static Map<String, String> _strings_nl = {
@@ -39,8 +38,7 @@ class Resources {
     'home__description' : 'Omschrijving',
     'home__specification' : 'Kenmerken',
     'home__price_formatted' : '€ [0] kosten koper',
-
-    'general__mm' : '<b>[0]</b>&nbsp;m&sup2;',
+    'home__mm' : '<b>[0]</b>&nbsp;m&sup2;',
   };
 
   static String getStringWithPlaceholder(String key, List<dynamic>? placeHolders) {
@@ -89,6 +87,11 @@ class Resources {
   static TextStyle getNormalTextStyle()
   {
     return const TextStyle(color: Colors.grey,fontSize: 14);
+  }
+
+  static TextStyle getBodyTextStyle()
+  {
+    return const TextStyle(color: APP_BODY_COLOR,fontSize: 14);
   }
 
   static TextStyle getNormalLightTextStyle()

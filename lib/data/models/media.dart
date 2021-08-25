@@ -1,4 +1,4 @@
-import 'package:fund_sample/data/models/media_item.dart';
+import 'package:funda_sample/data/models/media_item.dart';
 import 'package:collection/collection.dart';
 
 class Media {
