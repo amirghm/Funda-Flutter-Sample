@@ -1,4 +1,5 @@
 import 'package:fund_sample/data/models/media_item.dart';
+import 'package:collection/collection.dart';
 
 class Media {
   static const int MEDIA_IMAGE_CATEGORY = 1;
@@ -35,6 +36,6 @@ class Media {
       };
 
   String? get imageUrl => (categorie == MEDIA_IMAGE_CATEGORY)
-      ? mediaItems?.firstWhere((element) =>
-              element.category == MediaItem.IMAGE_ITEM_SELECTED_CATEGORY).url : '';
+      ? mediaItems?.firstWhereOrNull((element) =>
+              element.category == MediaItem.IMAGE_ITEM_SELECTED_CATEGORY)?.url : null;
 }

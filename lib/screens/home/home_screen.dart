@@ -361,6 +361,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   _descriptionWidget() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -381,6 +382,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   _specificationWidget() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.only(left: 16, right: 16, top: 8),
