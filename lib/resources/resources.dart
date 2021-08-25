@@ -19,20 +19,40 @@ class Resources {
     'general__no_internet': 'An error occurred during processing your request\nplease try again later',
     'general__server_error': 'Error occurred while Communication with Server with StatusCode : [0]',
     'general__ok' : 'OK',
+    'general__mm' : '<b>[0]</b>&nbsp;m&sup2;',
+
+    'home__rooms' : '<b>[0]</b> Room(s)',
+    'home__bathrooms' : '<b>[0]</b> Bathroom(s)',
+    'home__description' : 'Description',
+    'home__specification' : 'Specification',
+    'home__price_formatted' : '€ [0]',
+
+
+    'photo_gallery__count_indicator': '[0] of [1]',
   };
 
   static Map<String, String> _strings_nl = {
     'app__name': 'Funda voorbeeldtoepassing',
+
+    'home__rooms' : '<b>[0]</b> AantalKamers',
+    'home__bathrooms' : '<b>[0]</b> AantalBadkamers',
+    'home__description' : 'Omschrijving',
+    'home__specification' : 'Kenmerken',
+    'home__price_formatted' : '€ [0] kosten koper',
+
+    'general__mm' : '<b>[0]</b>&nbsp;m&sup2;',
   };
 
   static String getStringWithPlaceholder(String key, List<dynamic>? placeHolders) {
     Map<String, String> _strings;
 
-
-
-    if(AppPreferences.getLocale() == LOCALE_DUTCH)
+    if(AppPreferences.getLocale() == LOCALE_DUTCH) {
       _strings = _strings_nl;
+    }
     else
+      _strings = _strings_en;
+
+    if(_strings[key]==null)
       _strings = _strings_en;
 
     if(placeHolders==null){
@@ -44,18 +64,36 @@ class Resources {
       }
       return string??key;
     }
-
   }
 
   static String getString(String key) {
     return  getStringWithPlaceholder(key, null);
   }
 
-
   // App Styles
+  static TextStyle getToolbarTitleStyle()
+  {
+    return const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold);
+  }
+
   static TextStyle getTitleStyle()
   {
-    return const TextStyle(color: Colors.white,fontSize: 18);
+    return const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold);
+  }
+
+  static TextStyle getMediumStyle()
+  {
+    return const TextStyle(fontSize: 14, color: Colors.black);
+  }
+
+  static TextStyle getNormalTextStyle()
+  {
+    return const TextStyle(color: Colors.grey,fontSize: 14);
+  }
+
+  static TextStyle getNormalLightTextStyle()
+  {
+    return const TextStyle(color: Colors.white,fontSize: 14);
   }
 }
 
