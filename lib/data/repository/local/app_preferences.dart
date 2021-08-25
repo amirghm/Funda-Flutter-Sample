@@ -8,7 +8,6 @@ class AppPreferences {
     _appPreferences = await SharedPreferences.getInstance();
   }
 
-  // User Preferences
   static void setLocale(String value) {
     _appPreferences?.setString('locale', value);
   }
