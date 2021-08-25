@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:fund_sample/data/models/Kenmerken.dart';
-import 'package:fund_sample/data/models/Media.dart';
+import 'package:funda_sample/data/models/kenmerken.dart';
+import 'package:funda_sample/data/models/media.dart';
 
 HouseResponseModel houseResponseModelFromJson(String str) => HouseResponseModel.fromJson(json.decode(str));
 
@@ -19,6 +19,7 @@ class HouseResponseModel {
     this.media,
     this.url,
     this.woonOppervlakte,
+    this.volledigeOmschrijving,
     this.koopPrijs,
   });
 
@@ -31,9 +32,12 @@ class HouseResponseModel {
   List<Media>? media;
   String? url;
   int? woonOppervlakte;
+  String? volledigeOmschrijving;
   int? koopPrijs;
 
-  List<Media>? get images => media?.where((element) => element.categorie == Media.MEDIA_IMAGE_CATEGORY).toList();
+  List<Media>? get photos => media?.where((element) => element.categorie == Media.MEDIA_IMAGE_CATEGORY).toList();
+
+  bool get isPhotoAvailable => media!=null && media!.length>0;
 
   factory HouseResponseModel.fromJson(Map<String?, dynamic> json) => HouseResponseModel(
     aantalBadkamers: json["AantalBadkamers"] == null ? null : json["AantalBadkamers"],
@@ -42,6 +46,7 @@ class HouseResponseModel {
     id: json["Id"] == null ? null : json["Id"],
     kenmerken: json["Kenmerken"] == null ? null : List<Kenmerken>.from(json["Kenmerken"].map((x) => Kenmerken.fromJson(x))),
     makelaarTelefoon: json["MakelaarTelefoon"] == null ? null : json["MakelaarTelefoon"],
+    volledigeOmschrijving: json["VolledigeOmschrijving"] == null ? null : json["VolledigeOmschrijving"],
     media: json["Media"] == null ? null : List<Media>.from(json["Media"].map((x) => Media.fromJson(x))),
     url: json["URL"] == null ? null : json["URL"],
     woonOppervlakte: json["WoonOppervlakte"] == null ? null : json["WoonOppervlakte"],
@@ -56,6 +61,7 @@ class HouseResponseModel {
     "Kenmerken": kenmerken == null ? null : List<dynamic>.from(kenmerken!.map((x) => x.toJson())),
     "MakelaarTelefoon": makelaarTelefoon == null ? null : makelaarTelefoon,
     "Media": media == null ? null : List<dynamic>.from(media!.map((x) => x.toJson())),
+    "VolledigeOmschrijving": volledigeOmschrijving == null ? null : volledigeOmschrijving,
     "URL": url == null ? null : url,
     "WoonOppervlakte": woonOppervlakte == null ? null : woonOppervlakte,
     "KoopPrijs": koopPrijs == null ? null : koopPrijs,

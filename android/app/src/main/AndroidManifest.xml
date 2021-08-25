@@ -2,6 +2,7 @@
     package="com.amirghm.funda">
    <application
         android:label="Funda Sample"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fund_sample/data/repository/local/app_preferences.dart';
-import 'package:fund_sample/resources/resources.dart';
-import 'package:fund_sample/utils/network/exception.dart';
+import 'package:funda_sample/data/repository/local/app_preferences.dart';
+import 'package:funda_sample/resources/resources.dart';
+import 'package:funda_sample/utils/network/exception.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkService {

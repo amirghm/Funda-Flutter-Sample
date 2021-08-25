@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fund_sample/data/repository/local/app_preferences.dart';
-import 'package:fund_sample/resources/resources.dart';
-import 'package:fund_sample/screens/home/home_screen.dart';
+import 'package:funda_sample/data/repository/local/app_preferences.dart';
+import 'package:funda_sample/resources/resources.dart';
+import 'package:funda_sample/screens/home/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

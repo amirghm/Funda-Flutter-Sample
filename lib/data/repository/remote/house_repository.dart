@@ -1,7 +1,7 @@
 
 
-import 'package:fund_sample/data/models/responses/house.dart';
-import 'package:fund_sample/utils/network/network_service.dart';
+import 'package:funda_sample/data/models/responses/house.dart';
+import 'package:funda_sample/utils/network/network_service.dart';
 
 class HouseRepository
 {
