@@ -11,6 +11,21 @@ class ResponseProvider<T> {
 
   ResponseProvider.error(this.message) : status = Status.ERROR;
 
+  bool isLoading()
+  {
+    return status == Status.LOADING;
+  }
+
+  bool isCompleted()
+  {
+    return status == Status.COMPLETED;
+  }
+
+  bool haveError()
+  {
+    return status == Status.ERROR;
+  }
+
   @override
   String toString() {
     return "Status : $status \n Message : $message \n Data : $data";

@@ -1,9 +1,11 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:funda_sample/data/repository/remote/house_repository.dart';
 import 'package:funda_sample/resources/resources.dart';
 import 'package:funda_sample/screens/home/home_viewmodel.dart';
 import 'package:funda_sample/screens/splash/splash_screen.dart';
+import 'package:funda_sample/utils/network/network_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -21,7 +23,7 @@ class _FundaAppState extends State<FundaApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: HomeViewModel()),
+        ChangeNotifierProvider.value(value: HomeViewModel(houseRepository: HouseRepository(networkService: NetworkService()))),
       ],
       child: MaterialApp(
         localizationsDelegates: [
