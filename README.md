@@ -74,4 +74,4 @@ Libraries used in the whole application are:
 ## Screenshots
 
 <img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot2.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot4.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot5.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot3.jpg" width=200>
-<img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot1.jpg" height=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot6.jpg" width=200> 
+<img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot1.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot6.jpg" width=200> 
