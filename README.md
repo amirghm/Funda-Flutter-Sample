@@ -23,7 +23,7 @@ In this part we have our ```Models```, which distinct into two parts (at this co
 
 <img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/data.png"/>
 
-### RESOURCES
+### Resources
 This package handles all needed resources for the app including ```String```, ```App Colors```, ```Styles``` and some ```Placeholders```. With language auto changing feature, the application language is changes so simple by changing the app locale. We have also one constant file to store our hardcoded Key and Id which needed for fetching data.
 
 <img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/resources.png"/>
@@ -36,7 +36,7 @@ We have also one **ViewModel** class for Home screen for getting data from serve
 
 ### Utils
 
-In this part we keep some useful utils to simplify some processes. The ```Network``` part which have some useful classes. it contains **network_service** and **exception** which are responsible for any api calls. The **response_provider** is a very good helper class which can represent responses from an api call, it can carry the data and error and you can set state to it and use it into the ui. we have a **hidable_app_bar** part which have one class for handling hiding app bar with a smooth animation. and the last class is **utils** which contains some function for handling time and currency format.
+In this part we keep some useful utils to simplify some processes. The ```Network``` part which have some useful classes. it contains ```network_service``` and ```exception``` which are responsible for any api calls. The ```response_provider``` is a very good helper class which can represent responses from an api call, it can carry the data and error and you can set state to it and use it into the ui. we have a ```hidable_app_bar``` part which have one class for handling hiding app bar with a smooth animation. and the last class is ```utils``` which contains some function for handling time and currency format.
 
 <img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/utils.png"/>
 
@@ -73,4 +73,5 @@ Libraries used in the whole application are:
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot2.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot1.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot3.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot4.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot5.jpg" height=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot6.jpg" width=200> 
+<img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot2.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot4.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot5.jpg" width=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot3.jpg" width=200>
+<img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot1.jpg" height=200><img src="https://raw.githubusercontent.com/amirghm/Funda-Sample/develop/screenshots/screenshot6.jpg" width=200> 
