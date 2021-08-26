@@ -7,10 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:funda_sample/resources/resources.dart';
 import 'package:funda_sample/screens/gallery/photo_gallery_screen.dart';
 import 'package:funda_sample/screens/home/home_viewmodel.dart';
-import 'package:funda_sample/utils/network/response_provider.dart';
 import 'package:funda_sample/utils/utils.dart';
 import 'package:funda_sample/screens/webview/webview_screen.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,36 +20,14 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 
   static void open(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-        ModalRoute.withName(HOME_ROUTE));
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()), ModalRoute.withName(HOME_ROUTE));
   }
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin<HomeScreen> {
-  bool progressBar = false;
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<HomeScreen> {
 
-  void showProgressBar() {
-    setState(() {
-      progressBar = true;
-    });
-  }
-
-  void hideProgressBar() {
-    setState(() {
-      progressBar = false;
-    });
-  }
-
-  double mapElevation = 2;
   AnimationController? _hideFabAnimation;
-
-  var currentPhotoIndex = 0;
-
   late HomeViewModel viewModel;
-  late ResponseProvider responseProvider;
 
   bool _handleScrollNotification(ScrollNotification notification) {
     if (notification.depth == 0) {
@@ -59,14 +35,12 @@ class _HomeScreenState extends State<HomeScreen>
         final UserScrollNotification userScroll = notification;
         switch (userScroll.direction) {
           case ScrollDirection.forward:
-            if (userScroll.metrics.maxScrollExtent !=
-                userScroll.metrics.minScrollExtent) {
+            if (userScroll.metrics.maxScrollExtent != userScroll.metrics.minScrollExtent) {
               _hideFabAnimation?.forward();
             }
             break;
           case ScrollDirection.reverse:
-            if (userScroll.metrics.maxScrollExtent !=
-                userScroll.metrics.minScrollExtent) {
+            if (userScroll.metrics.maxScrollExtent != userScroll.metrics.minScrollExtent) {
               _hideFabAnimation?.reverse();
             }
             break;
@@ -89,40 +63,28 @@ class _HomeScreenState extends State<HomeScreen>
 
   initViewModel() {
     viewModel = Provider.of<HomeViewModel>(context, listen: false);
-    responseProvider = viewModel.responseProvider;
   }
 
   initFabAnimation() {
-    _hideFabAnimation =
-        AnimationController(vsync: this, duration: kThemeAnimationDuration);
+    _hideFabAnimation = AnimationController(vsync: this, duration: kThemeAnimationDuration);
   }
 
   fetchHouseDetails() async {
-    showProgressBar();
     await viewModel.fetchHouseDetails();
-    hideProgressBar();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return
-       NotificationListener<ScrollNotification>(
-        onNotification: _handleScrollNotification,
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: _appBarWidget(),
-            body: _bodyWidget(),
-            floatingActionButton: _fabWidget()),
-       );
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: Scaffold(backgroundColor: Colors.white, appBar: _appBarWidget(), body: _bodyWidget(), floatingActionButton: _fabWidget()),
+    );
   }
 
   _appBarWidget() {
     return AppBar(
       backgroundColor: Resources.APP_PRIMARY_COLOR,
-      title: Hero(
-          tag: 'logo',
-          child: Image.asset('assets/ic_splash_logo.png', height: 24)),
+      title: Hero(tag: 'logo', child: Image.asset('assets/ic_splash_logo.png', height: 24)),
       actions: [
         Padding(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -133,10 +95,7 @@ class _HomeScreenState extends State<HomeScreen>
                 padding: EdgeInsets.all(10),
                 width: 40,
                 height: 40,
-                child: ColorFiltered(
-                    colorFilter:
-                        ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    child: Image.asset('assets/ic_redirect.png')),
+                child: ColorFiltered(colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn), child: Image.asset('assets/ic_redirect.png')),
               )),
         ),
       ],
@@ -145,25 +104,64 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   _bodyWidget() {
-    return ModalProgressHUD(
-      inAsyncCall: progressBar,
-      opacity: 1,
-      color: Colors.white,
-      progressIndicator: CircularProgressIndicator(
-        strokeWidth: 2,
-        valueColor:
-        new AlwaysStoppedAnimation<Color>(Resources.APP_ACCENT_COLOR),
-      ),
-      child: Container(
-          color: Colors.grey[100],
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _imageSliderWidget(),
-                _detailsWidget(),
-              ],
+    return Consumer<HomeViewModel>(
+      builder: (_, __, ___) =>
+          Container(
+            color: Colors.grey[100],
+            child: viewModel.houseDetails.isCompleted()
+                ? Scrollbar(
+              isAlwaysShown: false,
+              child: SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Column(
+                  children: [
+                    _imageSliderWidget(),
+                    _detailsWidget(),
+                  ],
+                ),
+              ),
+            )
+                : viewModel.houseDetails.isLoading()
+                ? Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: new AlwaysStoppedAnimation<Color>(Resources.APP_ACCENT_COLOR),
+              ),
+            )
+                : Expanded(
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ColorFiltered(
+                          colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
+                          child: Image.asset(
+                            'assets/ic_no_signal.png',
+                            width: 80,
+                          )),
+                      Text(
+                        Resources.getString(
+                          'general__network_error',
+                        ),
+                        style: Resources.getNormalTextStyle(),
+                      ),
+                      SizedBox(height: 12),
+                      MaterialButton(
+                        child: Text(
+                          Resources.getString('home__try_again'),
+                          style: Resources.getNormalLightTextStyle(),
+                        ),
+                        onPressed: () => fetchHouseDetails(),
+                        color: Resources.APP_PRIMARY_COLOR,
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ),
-          )),
+          ),
     );
   }
 
@@ -182,58 +180,62 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   _imageSliderWidget() {
-    return (viewModel.houseResponseModel?.isPhotoAvailable ?? false)
+    return (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
         ? Stack(
       alignment: Alignment.bottomCenter,
       children: [
-       CarouselSlider(
-                options: CarouselOptions(
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentPhotoIndex = index;
-                    });
-                  },
-                  height: 200.0,
-                  autoPlay: true,
-                  enlargeCenterPage: false,
-                  viewportFraction: 1,
-                  pauseAutoPlayOnTouch: true,
-                  pauseAutoPlayOnManualNavigate: true,
-                  autoPlayInterval: Duration(seconds: 16),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                ),
-                items: viewModel.houseResponseModel?.photos?.map((media) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Hero(
-                        tag: 'photo-' + (media.id ?? ''),
-                        child: GestureDetector(
-                          onTap: () => handleOnSlidePhotoClicked(),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(color: Colors.grey[100]),
-                            child: (media.imageUrl == null)
-                                ? Container(
-                                    color: Colors.grey,
-                                    height: 200,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: media.imageUrl!,
-                                    fit: BoxFit.cover,
-                                    memCacheHeight: 500,
-                                  ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),
+        CarouselSlider(
+          options: CarouselOptions(
+            onPageChanged: (index, reason) {
+              viewModel.currentPhotoIndex.value = index;
+            },
+            height: 200.0,
+            autoPlay: true,
+            enlargeCenterPage: false,
+            viewportFraction: 1,
+            pauseAutoPlayOnTouch: true,
+            pauseAutoPlayOnManualNavigate: true,
+            autoPlayInterval: Duration(seconds: 16),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+          ),
+          items: viewModel.houseDetails.data?.photos?.map((media) {
+            return Builder(
+              builder: (BuildContext context) {
+                return Hero(
+                  tag: 'photo-' + (media.id ?? ''),
+                  child: GestureDetector(
+                    onTap: () => handleOnSlidePhotoClicked(),
+                    child: Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      decoration: BoxDecoration(color: Colors.grey[100]),
+                      child: (media.imageUrl == null)
+                          ? Container(
+                        color: Colors.grey,
+                        height: 200,
+                      )
+                          : CachedNetworkImage(
+                        imageUrl: media.imageUrl!,
+                        fit: BoxFit.cover,
+                        memCacheHeight: 500,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }).toList(),
+        ),
         Container(
           constraints: BoxConstraints(
             minHeight: 20,
-            maxWidth: MediaQuery.of(context).size.width, // minimum width
+            maxWidth: MediaQuery
+                .of(context)
+                .size
+                .width, // minimum width
           ),
           decoration: new BoxDecoration(
             gradient: new LinearGradient(
@@ -248,13 +250,16 @@ class _HomeScreenState extends State<HomeScreen>
                 tileMode: TileMode.clamp),
           ),
         ),
-        (viewModel.houseResponseModel?.isPhotoAvailable ?? false)
-            ? Container(
+        (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
+            ? ValueListenableBuilder(
+          valueListenable: viewModel.currentPhotoIndex,
+          builder: (_, __, ___) =>
+              Container(
                 padding: EdgeInsets.only(bottom: 4),
                 alignment: Alignment.bottomCenter,
                 child: AnimatedSmoothIndicator(
-                  activeIndex: currentPhotoIndex,
-                  count: viewModel.houseResponseModel!.photos!.length,
+                  activeIndex: viewModel.currentPhotoIndex.value,
+                  count: viewModel.houseDetails.data!.photos!.length,
                   effect: ScrollingDotsEffect(
                     dotColor: Colors.white54,
                     activeDotColor: Resources.APP_PRIMARY_COLOR,
@@ -262,31 +267,36 @@ class _HomeScreenState extends State<HomeScreen>
                     dotHeight: 8,
                   ),
                 ),
-              )
+              ),
+        )
             : Container(),
-        (viewModel.houseResponseModel?.isPhotoAvailable ?? false)
-            ? Container(
+        (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
+            ? ValueListenableBuilder(
+          valueListenable: viewModel.currentPhotoIndex,
+          builder: (_, __, ___) =>
+              Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  Resources.getStringWithPlaceholder(
-                      'photo_gallery__count_indicator', [
-                    (currentPhotoIndex + 1).toString(),
-                    viewModel.houseResponseModel?.photos?.length.toString()
-                  ]),
+                  Resources.getStringWithPlaceholder('photo_gallery__count_indicator',
+                      [(viewModel.currentPhotoIndex.value + 1).toString(), viewModel.houseDetails.data?.photos?.length.toString()]),
                   style: Resources.getNormalLightTextStyle(),
                 ),
-              )
+              ),
+        )
             : Container()
       ],
-    ):Container(
+    )
+        : Container(
       height: 200,
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       color: Colors.grey[300],
       child: Center(
         child: ColorFiltered(
-            colorFilter:
-            ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
             child: Image.asset(
               'assets/ic_home.png',
               width: 60,
@@ -313,17 +323,15 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   _overviewWidget() {
-    if (viewModel.houseResponseModel == null) return Container();
-    late var houseModel = viewModel.houseResponseModel!;
+    if (viewModel.houseDetails.data == null) return Container();
+    late var houseModel = viewModel.houseDetails.data!;
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           houseModel.adres != null && houseModel.adres!.isNotEmpty
               ? Container(
-                  padding: EdgeInsets.only(left: 16, bottom: 8),
-                  child: Text(viewModel.houseResponseModel!.adres!,
-                      style: Resources.getTitleStyle()))
+              padding: EdgeInsets.only(left: 16, bottom: 8), child: Text(viewModel.houseDetails.data!.adres!, style: Resources.getTitleStyle()))
               : Container(),
           Row(
             children: [
@@ -335,32 +343,23 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Row(children: [
                         houseModel.woonOppervlakte != null
                             ? _featuresWidget(
-                                'assets/ic_meter.png',
-                                Resources.getStringWithPlaceholder(
-                                    'home__mm',
-                                    [houseModel.woonOppervlakte!.toString()]))
+                            'assets/ic_meter.png', Resources.getStringWithPlaceholder('home__mm', [houseModel.woonOppervlakte!.toString()]))
                             : Container(),
                         SizedBox(width: 8),
                         houseModel.aantalKamers != null
                             ? _featuresWidget(
-                                'assets/ic_bed.png',
-                                Resources.getStringWithPlaceholder(
-                                    'home__rooms',
-                                    [houseModel.aantalKamers!.toString()]))
+                            'assets/ic_bed.png', Resources.getStringWithPlaceholder('home__rooms', [houseModel.aantalKamers!.toString()]))
                             : Container(),
                       ]),
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                       child: Row(
                         children: [
                           houseModel.aantalBadkamers != null
-                              ?_featuresWidget(
-                              'assets/ic_bathroom.png',
-                              Resources.getStringWithPlaceholder(
-                                  'home__bathrooms',
-                                  [houseModel.aantalBadkamers!.toString()])):Container(),
+                              ? _featuresWidget('assets/ic_bathroom.png',
+                              Resources.getStringWithPlaceholder('home__bathrooms', [houseModel.aantalBadkamers!.toString()]))
+                              : Container(),
                         ],
                       ),
                     ),
@@ -368,34 +367,22 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
               GestureDetector(
-                onTapDown: (details) {
-                  setState(() {
-                    mapElevation = 5;
-                  });
-                },
-                onTapUp: (details) {
-                  setState(() {
-                    mapElevation = 2;
-                  });
-                },
                 onTap: () => handleOnMapClicked(),
                 child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Card(
-                        elevation: mapElevation,
-                        child: Image.asset('assets/ic_show_on_map.png',
-                            width: 60))),
+                    child: Card(elevation: 2, child: Image.asset('assets/ic_show_on_map.png', width: 60))),
               )
             ],
           ),
-          houseModel.koopPrijs!=null?Container(
+          houseModel.koopPrijs != null
+              ? Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Text(
-              Resources.getStringWithPlaceholder(
-                  'home__price_formatted', [getCurrencyFormat(houseModel.koopPrijs)]),
+              Resources.getStringWithPlaceholder('home__price_formatted', [getCurrencyFormat(houseModel.koopPrijs)]),
               style: Resources.getTitleStyle(),
             ),
-          ):Container()
+          )
+              : Container()
         ],
       ),
     );
@@ -414,150 +401,116 @@ class _HomeScreenState extends State<HomeScreen>
         Html(
           shrinkWrap: true,
           data: value,
-          style: {
-            'body': Style(color: Colors.grey[700]),
-            'b': Style(color: Colors.black)
-          },
+          style: {'body': Style(color: Colors.grey[700]), 'b': Style(color: Colors.black)},
         )
       ],
     );
   }
 
   _descriptionWidget() {
-    return viewModel.houseResponseModel?.volledigeOmschrijving != null &&
-            viewModel.houseResponseModel!.volledigeOmschrijving!.isNotEmpty
+    return viewModel.houseDetails.data?.volledigeOmschrijving != null && viewModel.houseDetails.data!.volledigeOmschrijving!.isNotEmpty
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                child: Text(
-                  Resources.getString('home__description'),
-                  style: Resources.getTitleStyle(),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                child: ExpandText(
-                  viewModel.houseResponseModel!.volledigeOmschrijving ?? '',
-                ),
-              ),
-            ],
-          )
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+          child: Text(
+            Resources.getString('home__description'),
+            style: Resources.getTitleStyle(),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+          child: ExpandText(
+            viewModel.houseDetails.data!.volledigeOmschrijving ?? '',
+          ),
+        ),
+      ],
+    )
         : Container();
   }
 
   _specificationWidget() {
-    return viewModel.houseResponseModel?.kenmerken != null
+    return viewModel.houseDetails.data?.kenmerken != null
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-                child: Text(
-                  Resources.getString('home__specification'),
-                  style: Resources.getTitleStyle(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+          child: Text(
+            Resources.getString('home__specification'),
+            style: Resources.getTitleStyle(),
+          ),
+        ),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: viewModel.houseDetails.data!.kenmerken!.length,
+            itemBuilder: (context, index) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(viewModel.houseDetails.data!.kenmerken![index].titel ?? '-', style: Resources.getMediumStyle()),
+                    SizedBox(height: 8),
+                    Divider(),
+                    viewModel.houseDetails.data!.kenmerken![index].kenmerken != null
+                        ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: viewModel.houseDetails.data!.kenmerken![index].kenmerken!.length,
+                        itemBuilder: (context, subIndex) {
+                          return Container(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 2,
+                                        child: Text(viewModel.houseDetails.data!.kenmerken![index].kenmerken![subIndex].naam ?? '',
+                                            style: Resources.getNormalTextStyle())),
+                                    Expanded(
+                                        flex: 3,
+                                        child: Html(
+                                            data: viewModel.houseDetails.data!.kenmerken![index].kenmerken![subIndex].waarde ?? '',
+                                            style: {"body": Style(color: Resources.APP_BODY_COLOR)}))
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Divider()
+                              ],
+                            ),
+                          );
+                        })
+                        : Container()
+                  ],
                 ),
-              ),
-              Column(
-                children: List.generate(
-                    viewModel.houseResponseModel!.kenmerken!.length, (index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            viewModel.houseResponseModel!.kenmerken![index]
-                                    .titel ??
-                                '-',
-                            style: Resources.getMediumStyle()),
-                        SizedBox(height: 8),
-                        Divider(),
-                        viewModel.houseResponseModel!.kenmerken![index]
-                                    .kenmerken !=
-                                null
-                            ? Column(
-                                children: List.generate(
-                                    viewModel
-                                        .houseResponseModel!
-                                        .kenmerken![index]
-                                        .kenmerken!
-                                        .length, (subIndex) {
-                                  return Container(
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 2,
-                                                child: Text(
-                                                    viewModel
-                                                            .houseResponseModel!
-                                                            .kenmerken![index]
-                                                            .kenmerken![
-                                                                subIndex]
-                                                            .naam ??
-                                                        '',
-                                                    style: Resources
-                                                        .getNormalTextStyle())),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Html(
-                                                    data:
-                                                    viewModel
-                                                            .houseResponseModel!
-                                                            .kenmerken![index]
-                                                            .kenmerken![
-                                                                subIndex]
-                                                            .waarde ??
-                                                        '',
-                                                    style: {"body":Style(color: Resources.APP_BODY_COLOR)}))
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-                                        Divider()
-                                      ],
-                                    ),
-                                  );
-                                }),
-                              )
-                            : Container()
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ],
-          )
+              );
+            }),
+      ],
+    )
         : Container();
   }
 
   handleOnMapClicked() {
-    if (viewModel.houseResponseModel == null ||
-        viewModel.houseResponseModel!.makelaarTelefoon == null) return;
-    WebViewScreen.open(context, viewModel.houseResponseModel!.adres ?? '',
-        viewModel.houseResponseModel!.url! + '#kaart');
+    if (viewModel.houseDetails.data == null || viewModel.houseDetails.data!.makelaarTelefoon == null) return;
+    WebViewScreen.open(context, viewModel.houseDetails.data!.adres ?? '', viewModel.houseDetails.data!.url! + '#kaart');
   }
 
   handleOnCallClicked() async {
-    if (viewModel.houseResponseModel == null ||
-        viewModel.houseResponseModel!.makelaarTelefoon == null) return;
-    launch('tel://' + viewModel.houseResponseModel!.makelaarTelefoon!);
+    if (viewModel.houseDetails.data == null || viewModel.houseDetails.data!.makelaarTelefoon == null) return;
+    launch('tel://' + viewModel.houseDetails.data!.makelaarTelefoon!);
   }
 
   handleOnRedirectClicked() {
-    if (viewModel.houseResponseModel == null ||
-        viewModel.houseResponseModel!.url == null) return;
-    WebViewScreen.open(context, viewModel.houseResponseModel!.adres ?? '',
-        viewModel.houseResponseModel!.url!);
+    if (viewModel.houseDetails.data == null || viewModel.houseDetails.data!.url == null) return;
+    WebViewScreen.open(context, viewModel.houseDetails.data!.adres ?? '', viewModel.houseDetails.data!.url!);
   }
 
   handleOnSlidePhotoClicked() {
-    if (viewModel.houseResponseModel == null ||
-        viewModel.houseResponseModel!.photos == null) return;
-    PhotoGalleryScreen.open(context, viewModel.houseResponseModel!.photos!,
-        currentPhotoIndex, 'photo');
+    if (viewModel.houseDetails.data == null || viewModel.houseDetails.data!.photos == null) return;
+    PhotoGalleryScreen.open(context, viewModel.houseDetails.data!.photos!, viewModel.currentPhotoIndex.value, 'photo');
   }
 }
