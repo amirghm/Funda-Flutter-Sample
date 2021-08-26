@@ -16,8 +16,7 @@ dependencies:
   carousel_slider: ^4.0.0
   photo_view: ^0.11.1
   cached_network_image: ^3.0.0
-  dots_indicator: ^2.0.0
-  smooth_page_indicator: ^0.2.3
+`  smooth_page_indicator: ^0.2.3
   dismissible_page: ^0.6.3
   share: ^2.0.4
   flutter_cache_manager: ^3.1.1
