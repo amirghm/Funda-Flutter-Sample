@@ -16,8 +16,13 @@ class HomeViewModel with ChangeNotifier {
   ValueNotifier<int> currentPhotoIndex = ValueNotifier(0);
 
   Future<void> fetchHouseDetails() async {
-    _houseDetailsFetchResponse = ResponseProvider.loading('Fetching house details data...');
-    notifyListeners();
+    if(_houseDetailsFetchResponse.status == Status.INITIAL) {
+      _houseDetailsFetchResponse = ResponseProvider.loading('Fetching house details data...');
+    }
+    else {
+      _houseDetailsFetchResponse = ResponseProvider.loading('Fetching house details data...');
+      notifyListeners();
+    }
     try {
       HouseResponseModel? houseResponseModel = await houseRepository.fetchHouseDetails(key,id);
       _houseDetailsFetchResponse = ResponseProvider.completed(houseResponseModel);
