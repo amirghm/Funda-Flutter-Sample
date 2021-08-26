@@ -61,7 +61,6 @@ Libraries used in the whole application are:
 - [cached_network_image](https://pub.dev/packages/cached_network_image) - Used for loading images and cache them.
 - [smooth_page_indicator](https://pub.dev/packages/smooth_page_indicator) - With this library we show dots indicator for the slider.
 - [dismissible_page](https://pub.dev/packages/dismissible_page) - We use this for handling dismiss function for the gallery by swiping.
-- [okhttp-logging-interceptor](https://pub.dev/packages/logging) - logs HTTP request and response data.
 - [share](https://pub.dev/packages/share) - With this library we share the images from the gallery.
 - [flutter_cache_manager](https://pub.dev/packages/flutter_cache_manager) - With this library we can obtain cached image file and share it with **share** library.
 - [flutter_html](https://pub.dev/packages/flutter_html) - Some of contents of api are in Html format, I use this library to support that contents.
