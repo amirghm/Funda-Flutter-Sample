@@ -23,9 +23,12 @@ class Resources {
     'home__specification' : 'Specification',
     'home__price_formatted' : '€ [0]',
     'home__mm' : '<b>[0]</b>&nbsp;m&sup2;',
+    'home__try_again' : 'Try Again',
 
     'photo_gallery__count_indicator': '[0] of [1]',
 
+
+    'general__network_error': 'Something went wrong 🧐',
     'general__no_internet': 'An error occurred during processing your request\nplease try again later',
     'general__server_error': 'Error occurred while Communication with Server with StatusCode : [0]',
   };
@@ -39,6 +42,8 @@ class Resources {
     'home__specification' : 'Kenmerken',
     'home__price_formatted' : '€ [0] kosten koper',
     'home__mm' : '<b>[0]</b>&nbsp;m&sup2;',
+    'home__try_again' : 'Probeer het opnieuw',
+
   };
 
   static String getStringWithPlaceholder(String key, List<dynamic>? placeHolders) {
