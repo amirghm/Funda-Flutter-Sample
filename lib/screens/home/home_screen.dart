@@ -20,12 +20,12 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 
   static void open(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()), ModalRoute.withName(HOME_ROUTE));
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()), ModalRoute.withName(HOME_ROUTE));
   }
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<HomeScreen> {
-
   AnimationController? _hideFabAnimation;
   late HomeViewModel viewModel;
 
@@ -77,7 +77,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
-      child: Scaffold(backgroundColor: Colors.white, appBar: _appBarWidget(), body: _bodyWidget(), floatingActionButton: _fabWidget()),
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: _appBarWidget(),
+          body: _bodyWidget(),
+          floatingActionButton: _fabWidget()),
     );
   }
 
@@ -95,7 +99,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
                 padding: EdgeInsets.all(10),
                 width: 40,
                 height: 40,
-                child: ColorFiltered(colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn), child: Image.asset('assets/ic_redirect.png')),
+                child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    child: Image.asset('assets/ic_redirect.png')),
               )),
         ),
       ],
@@ -105,63 +111,60 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
 
   _bodyWidget() {
     return Consumer<HomeViewModel>(
-      builder: (_, __, ___) =>
-          Container(
-            color: Colors.grey[100],
-            child: viewModel.houseDetails.isCompleted()
-                ? Scrollbar(
-              isAlwaysShown: false,
-              child: SingleChildScrollView(
-                physics: ScrollPhysics(),
-                child: Column(
-                  children: [
-                    _imageSliderWidget(),
-                    _detailsWidget(),
-                  ],
-                ),
-              ),
-            )
-                : viewModel.houseDetails.isLoading()
-                ? Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: new AlwaysStoppedAnimation<Color>(Resources.APP_ACCENT_COLOR),
-              ),
-            )
-                : Expanded(
-              child: Container(
-                color: Colors.white,
-                child: Center(
+      builder: (_, __, ___) => Container(
+        color: Colors.grey[100],
+        child: viewModel.houseDetails.isCompleted()
+            ? Scrollbar(
+                isAlwaysShown: false,
+                child: SingleChildScrollView(
+                  physics: ScrollPhysics(),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ColorFiltered(
-                          colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
-                          child: Image.asset(
-                            'assets/ic_no_signal.png',
-                            width: 80,
-                          )),
-                      Text(
-                        Resources.getString(
-                          'general__network_error',
-                        ),
-                        style: Resources.getNormalTextStyle(),
-                      ),
-                      SizedBox(height: 12),
-                      MaterialButton(
-                        child: Text(
-                          Resources.getString('home__try_again'),
-                          style: Resources.getNormalLightTextStyle(),
-                        ),
-                        onPressed: () => fetchHouseDetails(),
-                        color: Resources.APP_PRIMARY_COLOR,
-                      )
+                      _imageSliderWidget(),
+                      _detailsWidget(),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ),
+              )
+            : viewModel.houseDetails.isLoading()
+                ? Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: new AlwaysStoppedAnimation<Color>(Resources.APP_ACCENT_COLOR),
+                    ),
+                  )
+                : Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ColorFiltered(
+                            colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
+                            child: Image.asset(
+                              'assets/ic_no_signal.png',
+                              width: 80,
+                            )),
+                        Text(
+                          Resources.getString(
+                            'general__network_error',
+                          ),
+                          style: Resources.getNormalTextStyle(),
+                        ),
+                        SizedBox(height: 12),
+                        MaterialButton(
+                          child: Text(
+                            Resources.getString('home__try_again'),
+                            style: Resources.getNormalLightTextStyle(),
+                          ),
+                          onPressed: () => fetchHouseDetails(),
+                          color: Resources.APP_PRIMARY_COLOR,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+      ),
     );
   }
 
@@ -182,128 +185,119 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
   _imageSliderWidget() {
     return (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
         ? Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        CarouselSlider(
-          options: CarouselOptions(
-            onPageChanged: (index, reason) {
-              viewModel.currentPhotoIndex.value = index;
-            },
-            height: 200.0,
-            autoPlay: true,
-            enlargeCenterPage: false,
-            viewportFraction: 1,
-            pauseAutoPlayOnTouch: true,
-            pauseAutoPlayOnManualNavigate: true,
-            autoPlayInterval: Duration(seconds: 16),
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-          ),
-          items: viewModel.houseDetails.data?.photos?.map((media) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Hero(
-                  tag: 'photo-' + (media.id ?? ''),
-                  child: GestureDetector(
-                    onTap: () => handleOnSlidePhotoClicked(),
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      decoration: BoxDecoration(color: Colors.grey[100]),
-                      child: (media.imageUrl == null)
-                          ? Container(
-                        color: Colors.grey,
-                        height: 200,
-                      )
-                          : CachedNetworkImage(
-                        imageUrl: media.imageUrl!,
-                        fit: BoxFit.cover,
-                        memCacheHeight: 500,
+            alignment: Alignment.bottomCenter,
+            children: [
+              CarouselSlider(
+                options: CarouselOptions(
+                  onPageChanged: (index, reason) {
+                    viewModel.currentPhotoIndex.value = index;
+                  },
+                  height: 200.0,
+                  autoPlay: true,
+                  enlargeCenterPage: false,
+                  viewportFraction: 1,
+                  pauseAutoPlayOnTouch: true,
+                  pauseAutoPlayOnManualNavigate: true,
+                  autoPlayInterval: Duration(seconds: 16),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                ),
+                items: viewModel.houseDetails.data?.photos?.map((media) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Hero(
+                        tag: 'photo-' + (media.id ?? ''),
+                        child: GestureDetector(
+                          onTap: () => handleOnSlidePhotoClicked(),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(color: Colors.grey[100]),
+                            child: (media.imageUrl == null)
+                                ? Container(
+                                    color: Colors.grey,
+                                    height: 200,
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: media.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    memCacheHeight: 500,
+                                  ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: 20,
+                  maxWidth: MediaQuery.of(context).size.width, // minimum width
+                ),
+                decoration: new BoxDecoration(
+                  gradient: new LinearGradient(
+                      colors: [
+                        const Color(0x00000000),
+                        Colors.black12,
+                        Colors.black26,
+                      ],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(0.0, 1.0),
+                      stops: [0.0, 0.5, 1.0],
+                      tileMode: TileMode.clamp),
+                ),
+              ),
+              (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
+                  ? ValueListenableBuilder(
+                      valueListenable: viewModel.currentPhotoIndex,
+                      builder: (_, __, ___) => Container(
+                        padding: EdgeInsets.only(bottom: 4),
+                        alignment: Alignment.bottomCenter,
+                        child: AnimatedSmoothIndicator(
+                          activeIndex: viewModel.currentPhotoIndex.value,
+                          count: viewModel.houseDetails.data!.photos!.length,
+                          effect: ScrollingDotsEffect(
+                            dotColor: Colors.white54,
+                            activeDotColor: Resources.APP_PRIMARY_COLOR,
+                            dotWidth: 8,
+                            dotHeight: 8,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }).toList(),
-        ),
-        Container(
-          constraints: BoxConstraints(
-            minHeight: 20,
-            maxWidth: MediaQuery
-                .of(context)
-                .size
-                .width, // minimum width
-          ),
-          decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-                colors: [
-                  const Color(0x00000000),
-                  Colors.black12,
-                  Colors.black26,
-                ],
-                begin: const FractionalOffset(0.0, 0.0),
-                end: const FractionalOffset(0.0, 1.0),
-                stops: [0.0, 0.5, 1.0],
-                tileMode: TileMode.clamp),
-          ),
-        ),
-        (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
-            ? ValueListenableBuilder(
-          valueListenable: viewModel.currentPhotoIndex,
-          builder: (_, __, ___) =>
-              Container(
-                padding: EdgeInsets.only(bottom: 4),
-                alignment: Alignment.bottomCenter,
-                child: AnimatedSmoothIndicator(
-                  activeIndex: viewModel.currentPhotoIndex.value,
-                  count: viewModel.houseDetails.data!.photos!.length,
-                  effect: ScrollingDotsEffect(
-                    dotColor: Colors.white54,
-                    activeDotColor: Resources.APP_PRIMARY_COLOR,
-                    dotWidth: 8,
-                    dotHeight: 8,
-                  ),
-                ),
-              ),
-        )
-            : Container(),
-        (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
-            ? ValueListenableBuilder(
-          valueListenable: viewModel.currentPhotoIndex,
-          builder: (_, __, ___) =>
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  Resources.getStringWithPlaceholder('photo_gallery__count_indicator',
-                      [(viewModel.currentPhotoIndex.value + 1).toString(), viewModel.houseDetails.data?.photos?.length.toString()]),
-                  style: Resources.getNormalLightTextStyle(),
-                ),
-              ),
-        )
-            : Container()
-      ],
-    )
+                    )
+                  : Container(),
+              (viewModel.houseDetails.data?.isPhotoAvailable ?? false)
+                  ? ValueListenableBuilder(
+                      valueListenable: viewModel.currentPhotoIndex,
+                      builder: (_, __, ___) => Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          Resources.getStringWithPlaceholder('photo_gallery__count_indicator', [
+                            (viewModel.currentPhotoIndex.value + 1).toString(),
+                            viewModel.houseDetails.data?.photos?.length.toString()
+                          ]),
+                          style: Resources.getNormalLightTextStyle(),
+                        ),
+                      ),
+                    )
+                  : Container()
+            ],
+          )
         : Container(
-      height: 200,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      color: Colors.grey[300],
-      child: Center(
-        child: ColorFiltered(
-            colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
-            child: Image.asset(
-              'assets/ic_home.png',
-              width: 60,
-              fit: BoxFit.contain,
-            )),
-      ),
-    );
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey[300],
+            child: Center(
+              child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(Colors.grey[400]!, BlendMode.srcIn),
+                  child: Image.asset(
+                    'assets/ic_home.png',
+                    width: 60,
+                    fit: BoxFit.contain,
+                  )),
+            ),
+          );
   }
 
   _detailsWidget() {
@@ -331,7 +325,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
         children: [
           houseModel.adres != null && houseModel.adres!.isNotEmpty
               ? Container(
-              padding: EdgeInsets.only(left: 16, bottom: 8), child: Text(viewModel.houseDetails.data!.adres!, style: Resources.getTitleStyle()))
+                  padding: EdgeInsets.only(left: 16, bottom: 8),
+                  child: Text(viewModel.houseDetails.data!.adres!, style: Resources.getTitleStyle()))
               : Container(),
           Row(
             children: [
@@ -343,12 +338,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
                       child: Row(children: [
                         houseModel.woonOppervlakte != null
                             ? _featuresWidget(
-                            'assets/ic_meter.png', Resources.getStringWithPlaceholder('home__mm', [houseModel.woonOppervlakte!.toString()]))
+                                'assets/ic_meter.png',
+                                Resources.getStringWithPlaceholder(
+                                    'home__mm', [houseModel.woonOppervlakte!.toString()]))
                             : Container(),
                         SizedBox(width: 8),
                         houseModel.aantalKamers != null
                             ? _featuresWidget(
-                            'assets/ic_bed.png', Resources.getStringWithPlaceholder('home__rooms', [houseModel.aantalKamers!.toString()]))
+                                'assets/ic_bed.png',
+                                Resources.getStringWithPlaceholder(
+                                    'home__rooms', [houseModel.aantalKamers!.toString()]))
                             : Container(),
                       ]),
                     ),
@@ -357,8 +356,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
                       child: Row(
                         children: [
                           houseModel.aantalBadkamers != null
-                              ? _featuresWidget('assets/ic_bathroom.png',
-                              Resources.getStringWithPlaceholder('home__bathrooms', [houseModel.aantalBadkamers!.toString()]))
+                              ? _featuresWidget(
+                                  'assets/ic_bathroom.png',
+                                  Resources.getStringWithPlaceholder(
+                                      'home__bathrooms', [houseModel.aantalBadkamers!.toString()]))
                               : Container(),
                         ],
                       ),
@@ -376,12 +377,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
           ),
           houseModel.koopPrijs != null
               ? Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Text(
-              Resources.getStringWithPlaceholder('home__price_formatted', [getCurrencyFormat(houseModel.koopPrijs)]),
-              style: Resources.getTitleStyle(),
-            ),
-          )
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Text(
+                    Resources.getStringWithPlaceholder(
+                        'home__price_formatted', [getCurrencyFormat(houseModel.koopPrijs)]),
+                    style: Resources.getTitleStyle(),
+                  ),
+                )
               : Container()
         ],
       ),
@@ -408,89 +410,96 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin<H
   }
 
   _descriptionWidget() {
-    return viewModel.houseDetails.data?.volledigeOmschrijving != null && viewModel.houseDetails.data!.volledigeOmschrijving!.isNotEmpty
+    return viewModel.houseDetails.data?.volledigeOmschrijving != null &&
+            viewModel.houseDetails.data!.volledigeOmschrijving!.isNotEmpty
         ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-          child: Text(
-            Resources.getString('home__description'),
-            style: Resources.getTitleStyle(),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-          child: ExpandText(
-            viewModel.houseDetails.data!.volledigeOmschrijving ?? '',
-          ),
-        ),
-      ],
-    )
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: Text(
+                  Resources.getString('home__description'),
+                  style: Resources.getTitleStyle(),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: ExpandText(
+                  viewModel.houseDetails.data!.volledigeOmschrijving ?? '',
+                ),
+              ),
+            ],
+          )
         : Container();
   }
 
   _specificationWidget() {
     return viewModel.houseDetails.data?.kenmerken != null
         ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-          child: Text(
-            Resources.getString('home__specification'),
-            style: Resources.getTitleStyle(),
-          ),
-        ),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: viewModel.houseDetails.data!.kenmerken!.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(viewModel.houseDetails.data!.kenmerken![index].titel ?? '-', style: Resources.getMediumStyle()),
-                    SizedBox(height: 8),
-                    Divider(),
-                    viewModel.houseDetails.data!.kenmerken![index].kenmerken != null
-                        ? ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: viewModel.houseDetails.data!.kenmerken![index].kenmerken!.length,
-                        itemBuilder: (context, subIndex) {
-                          return Container(
-                            child: Column(
-                              children: [
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text(viewModel.houseDetails.data!.kenmerken![index].kenmerken![subIndex].naam ?? '',
-                                            style: Resources.getNormalTextStyle())),
-                                    Expanded(
-                                        flex: 3,
-                                        child: Html(
-                                            data: viewModel.houseDetails.data!.kenmerken![index].kenmerken![subIndex].waarde ?? '',
-                                            style: {"body": Style(color: Resources.APP_BODY_COLOR)}))
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Divider()
-                              ],
-                            ),
-                          );
-                        })
-                        : Container()
-                  ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+                child: Text(
+                  Resources.getString('home__specification'),
+                  style: Resources.getTitleStyle(),
                 ),
-              );
-            }),
-      ],
-    )
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: viewModel.houseDetails.data!.kenmerken!.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(viewModel.houseDetails.data!.kenmerken![index].titel ?? '-',
+                              style: Resources.getMediumStyle()),
+                          SizedBox(height: 8),
+                          Divider(),
+                          viewModel.houseDetails.data!.kenmerken![index].kenmerken != null
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.houseDetails.data!.kenmerken![index].kenmerken!.length,
+                                  itemBuilder: (context, subIndex) {
+                                    return Container(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                      viewModel.houseDetails.data!.kenmerken![index]
+                                                              .kenmerken![subIndex].naam ??
+                                                          '',
+                                                      style: Resources.getNormalTextStyle())),
+                                              Expanded(
+                                                  flex: 3,
+                                                  child: Html(
+                                                      data: viewModel.houseDetails.data!.kenmerken![index]
+                                                              .kenmerken![subIndex].waarde ??
+                                                          '',
+                                                      style: {"body": Style(color: Resources.APP_BODY_COLOR)}))
+                                            ],
+                                          ),
+                                          SizedBox(height: 8),
+                                          Divider()
+                                        ],
+                                      ),
+                                    );
+                                  })
+                              : Container()
+                        ],
+                      ),
+                    );
+                  }),
+            ],
+          )
         : Container();
   }
 
